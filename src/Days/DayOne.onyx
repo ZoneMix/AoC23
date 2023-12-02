@@ -1,0 +1,40 @@
+package DayOne
+
+use core {*}
+
+Solve :: () -> void {
+	filepath : [] u8 = "Days/input/day_one.txt";
+	input := os.open(filepath)->unwrap();
+	defer os.close(&input);
+	contents := string.split(os.get_contents_from_file(&input), 10);
+	content_splice := contents[0 .. contents.count - 1];
+
+	PartOne(content_splice);
+	PartTwo(content_splice);
+}
+
+PartOne :: (contents: [][] u8) -> void {
+	total : u32 = 0;
+	numset: [] u8 = "0123456789";
+
+	for line: contents {
+		nums: [..] u8;
+		array.init(&nums);
+		defer array.free(&nums);
+		for char: line {
+			if string.contains(numset, char) {
+				nums << char;
+			}
+		}
+		if nums.data != null {
+			num_slice := u8.[nums[0], nums[nums.count - 1]];
+			total = total + cast(u32) conv.str_to_i64(num_slice);
+		}
+	}
+	print("PartOne: ");
+	println(total);
+}
+
+PartTwo :: (contents: [][] u8) -> void {
+}
+

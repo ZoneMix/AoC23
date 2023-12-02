@@ -1,0 +1,13 @@
+package {
+    name "AoC23" 
+    author "Bailey Belisario" 
+    url "" 
+    description "Advent of Code 2023" 
+    version "0.0.1" 
+}
+
+config {
+    dependency_source_path "./lib" 
+    dependency_binary_path "./bin" 
+}
+

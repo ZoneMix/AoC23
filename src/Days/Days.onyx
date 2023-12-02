@@ -1,0 +1,17 @@
+package Days
+
+#load "Days/DayOne"
+
+use DayOne
+
+use core {println}
+
+SolveAll :: () -> void {
+    One();
+}
+
+One :: () -> void {
+    println("Solving Day One");
+    DayOne.Solve();
+}
+
