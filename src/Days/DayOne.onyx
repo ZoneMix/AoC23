@@ -9,11 +9,13 @@ Solve :: () -> void {
 	contents := string.split(os.get_contents_from_file(&input), 10);
 	content_splice := contents[0 .. contents.count - 1];
 
-	PartOne(content_splice);
-	PartTwo(content_splice);
+	tprintf (
+		"Part One: {}\nPart Two: {}\n", 
+		PartOne(contents), PartTwo(contents)
+	) |> println();
 }
 
-PartOne :: (contents: [][] u8) -> void {
+PartOne :: (contents: [][] u8) -> u32 {
 	total : u32 = 0;
 	numset: [] u8 = "0123456789";
 
@@ -31,10 +33,12 @@ PartOne :: (contents: [][] u8) -> void {
 			total = total + cast(u32) conv.str_to_i64(num_slice);
 		}
 	}
-	print("PartOne: ");
-	println(total);
+
+	return total;
 }
 
-PartTwo :: (contents: [][] u8) -> void {
+PartTwo :: (contents: [][] u8) -> u32 {
+	total : u32 = 0;
+	return total;
 }
 
