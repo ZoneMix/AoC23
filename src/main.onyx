@@ -1,7 +1,8 @@
-#load "Days/Days"
+#load "Days/Day"
 
-use Days
+use Day
 
 main :: () -> void {
-	Days.One();
+	Day.One();
+	Day.Two();
 }

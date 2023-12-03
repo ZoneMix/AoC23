@@ -1,0 +1,21 @@
+package DayTwo
+
+#load "helpers"
+
+use core {*}
+use helpers {*}
+
+Solve :: () -> void {
+    contents := GetContents("Days/input/day_two.txt");
+    PrintRes(PartOne(contents), PartTwo(contents));
+}
+
+PartOne :: (contents: [][] u8) -> u32 {
+
+    return 0;
+}
+
+PartTwo :: (contents: [][] u8) -> u32 {
+
+    return 0;
+}

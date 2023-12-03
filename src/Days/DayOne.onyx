@@ -1,18 +1,13 @@
 package DayOne
 
+#load "helpers"
+
 use core {*}
+use helpers {*}
 
 Solve :: () -> void {
-	filepath : [] u8 = "Days/input/day_one.txt";
-	input := os.open(filepath)->unwrap();
-	defer os.close(&input);
-	contents := string.split(os.get_contents_from_file(&input), 10);
-	content_splice := contents[0 .. contents.count - 1];
-
-	tprintf (
-		"Part One: {}\nPart Two: {}\n", 
-		PartOne(content_splice), PartTwo(content_splice)
-	) |> println();
+	contents := GetContents("Days/input/day_one.txt");
+	PrintRes(PartOne(contents), PartTwo(contents));
 }
 
 PartOne :: (contents: [][] u8) -> u32 {

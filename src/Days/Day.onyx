@@ -1,10 +1,12 @@
-package Days
+package Day
 
 #load "Days/DayOne"
+#load "Days/DayTwo"
 
 use DayOne
+use DayTwo
 
-use core {println}
+use core { println }
 
 SolveAll :: () -> void {
     One();
@@ -13,5 +15,10 @@ SolveAll :: () -> void {
 One :: () -> void {
     println("Solving Day One");
     DayOne.Solve();
+}
+
+Two :: () -> void {
+    println("Solving Day Two");
+    DayTwo.Solve();
 }
 
