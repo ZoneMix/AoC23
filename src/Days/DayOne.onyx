@@ -11,23 +11,25 @@ Solve :: () -> void {
 
 	tprintf (
 		"Part One: {}\nPart Two: {}\n", 
-		PartOne(contents), PartTwo(contents)
+		PartOne(content_splice), PartTwo(content_splice)
 	) |> println();
 }
 
 PartOne :: (contents: [][] u8) -> u32 {
-	total : u32 = 0;
+	total: u32 = 0;
 	numset: [] u8 = "0123456789";
 
 	for line: contents {
 		nums: [..] u8;
 		array.init(&nums);
 		defer array.free(&nums);
+
 		for char: line {
 			if string.contains(numset, char) {
 				nums << char;
 			}
 		}
+
 		if nums.data != null {
 			num_slice := u8.[nums[0], nums[nums.count - 1]];
 			total = total + cast(u32) conv.str_to_i64(num_slice);
@@ -38,7 +40,44 @@ PartOne :: (contents: [][] u8) -> u32 {
 }
 
 PartTwo :: (contents: [][] u8) -> u32 {
-	total : u32 = 0;
+	numset := map.literal(str, str, .[
+		.{"zero", "0"},
+		.{"one", "1"},
+		.{"two", "2"},
+		.{"three", "3"},
+		.{"four", "4"},
+		.{"five", "5"},
+		.{"six", "6"},
+		.{"seven", "7"},
+		.{"eight", "8"},
+		.{"nine", "9"},
+	]);
+
+	total: u32 = 0;
+
+	for line: contents {
+		len := string.length(line);
+		nums: [..] u8;
+		array.init(&nums);
+		defer array.free(&nums);
+
+		while i := 0; i <= len {
+			slice := line[i..len];
+
+			for num: map.as_iter(&numset) {
+				if string.starts_with(slice, num.key)
+				|| string.starts_with(slice, num.value)
+				do nums << cast(u8) conv.str_to_i64(num.value);
+			}
+
+			i = i + 1;
+		}
+
+		if nums.data != null {
+			total = total + cast(u32) (nums[0] * 10);
+			total = total + cast(u32) nums[nums.count - 1];
+		}
+	}
+
 	return total;
 }
-
