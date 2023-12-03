@@ -7,7 +7,10 @@ use helpers {*}
 
 Solve :: () -> void {
 	contents := GetContents("Days/input/day_one.txt");
-	PrintRes(PartOne(contents), PartTwo(contents));
+	PrintRes(
+		PartOne(contents), 
+		PartTwo(contents)
+	);
 }
 
 PartOne :: (contents: [][] u8) -> u32 {
