@@ -12,5 +12,7 @@ config {
 }
 
 lsp {
-    mode "file"
+    mode "project"
+    source_files "main.onyx"
+    working_dir "src"
 }

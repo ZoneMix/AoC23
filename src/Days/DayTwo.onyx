@@ -18,16 +18,17 @@ Draw :: struct {
 
 Solve :: () -> void {
     contents := GetContents("Days/input/day_two.txt");
+
+    games := ParseGames(contents);
+
     PrintRes(
-        PartOne(contents),
-        PartTwo(contents)
+        PartOne(games),
+        PartTwo(games)
     );
 }
 
-PartOne :: (contents: [][] u8) -> u32 {
-    red := 12;
-    green := 13;
-    blue := 14;
+ParseGames :: (contents: [][] u8) -> [..] Game {
+    games : [..] Game;
 
     for line: contents {
         string.advance(&line, 5);
@@ -39,17 +40,50 @@ PartOne :: (contents: [][] u8) -> u32 {
 
         draw: Draw;
 
-        println(line);
         while !string.empty(line) {
-            draw := string.read_until_any(&line, 0, ',', ';');
-            println(draw);
+            draw_hand := string.split(
+                string.read_until_any(&line, 0, ',', ';'),
+                32
+            );
+
+            draw_num : i32 = ~~conv.parse_int(draw_hand[0]);
+
+            switch draw_hand[1] {
+                case "red" do draw.red = draw_num;
+                case "green" do draw.green = draw_num;
+                case "blue" do draw.blue = draw_num;
+            }
+
             string.advance(&line, 2);
+
+            game.draws << draw;
         }
+        games << game;
     }
-    return 0;
+
+    return games;
 }
 
-PartTwo :: (contents: [][] u8) -> u32 {
+PartOne :: (games: [..] Game) -> u32 {
+    red := 12;
+    green := 13;
+    blue := 14;
+    total := 0;
 
+    for game: games {
+        possible := true;
+        for draw: game.draws {
+            if draw.red > red ||
+            draw.green > green ||
+            draw.blue > blue do possible = false;
+        }
+
+        if possible do total = total + game.id;
+    }
+
+    return total;
+}
+
+PartTwo :: (games: [..] Game) -> u32 {
     return 0;
 }
