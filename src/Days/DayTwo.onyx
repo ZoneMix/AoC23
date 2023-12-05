@@ -17,7 +17,7 @@ Draw :: struct {
 }
 
 Solve :: () -> void {
-    contents := GetContents("Days/input/day_two.txt");
+    contents := GetContents("input/day_two.txt");
 
     games := ParseGames(contents);
 

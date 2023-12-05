@@ -5,4 +5,5 @@ use Day
 main :: () -> void {
 	Day.One();
 	Day.Two();
+	Day.Three();
 }
