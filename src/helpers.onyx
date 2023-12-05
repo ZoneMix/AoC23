@@ -3,15 +3,13 @@ package helpers
 use core {*}
 
 GetContents :: (filepath: [] u8) -> [][] u8 {
-    input := os.open(filepath)->unwrap();
-	defer os.close(&input);
-	contents := string.split(os.get_contents_from_file(&input), 10);
+	contents := string.split(os.get_contents(filepath), 10);
     return contents[0 .. contents.count - 1];
 }
 
 PrintRes :: (p1: u32, p2: u32) -> void {
 	tprintf (
-		"Part One: {}\nPart Two: {}\n",
+	    "Part One: {}\nPart Two: {}\n",
         p1, p2
     ) |> println();
 }

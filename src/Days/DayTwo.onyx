@@ -5,6 +5,17 @@ package DayTwo
 use core {*}
 use helpers {*}
 
+Game :: struct {
+    id: i32;
+    draws: [..] Draw;
+}
+
+Draw :: struct {
+    red: i32;
+    green: i32;
+    blue: i32;
+}
+
 Solve :: () -> void {
     contents := GetContents("Days/input/day_two.txt");
     PrintRes(
@@ -14,9 +25,31 @@ Solve :: () -> void {
 }
 
 PartOne :: (contents: [][] u8) -> u32 {
+    red := 12;
+    green := 13;
+    blue := 14;
+
+    for line: contents {
+        string.advance(&line, 5);
+        game_num := cast(i32) conv.parse_int(&line);
+        string.advance(&line, 2);
+
+        game: Game;
+        game.id = game_num;
+
+        draw: Draw;
+
+        println(line);
+        while !string.empty(line) {
+            draw := string.read_until_any(&line, 0, ',', ';');
+            println(draw);
+            string.advance(&line, 2);
+        }
+    }
     return 0;
 }
 
 PartTwo :: (contents: [][] u8) -> u32 {
+
     return 0;
 }

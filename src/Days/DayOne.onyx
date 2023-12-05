@@ -29,6 +29,7 @@ PartOne :: (contents: [][] u8) -> u32 {
 		}
 
 		if nums.data != null {
+			println(nums);
 			num_slice := u8.[nums[0], nums[nums.count - 1]];
 			total = total + cast(u32) conv.str_to_i64(num_slice);
 		}

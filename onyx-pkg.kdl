@@ -11,3 +11,6 @@ config {
     dependency_binary_path "./bin" 
 }
 
+lsp {
+    mode "file"
+}
