@@ -85,5 +85,19 @@ PartOne :: (games: [..] Game) -> u32 {
 }
 
 PartTwo :: (games: [..] Game) -> u32 {
-    return 0;
+    total := 0;
+
+    for game: games {
+        maxr := 0;
+        maxg := 0;
+        maxb := 0;
+        for draw: game.draws {
+            maxr = math.max(maxr, draw.red);
+            maxg = math.max(maxg, draw.green);
+            maxb = math.max(maxb, draw.blue);
+        }
+        total = total + (maxr * maxg * maxb);
+    }
+
+    return total;
 }
