@@ -3,10 +3,12 @@ package Day
 #load "Days/DayOne"
 #load "Days/DayTwo"
 #load "Days/DayThree"
+#load "Days/DayFour"
 
 use DayOne
 use DayTwo
 use DayThree
+use DayFour
 
 use core { println }
 
@@ -27,4 +29,9 @@ Two :: () -> void {
 Three :: () -> void {
     println("Solving Day Three");
     DayThree.Solve();
+}
+
+Four :: () -> void {
+    println("Solving Day Four");
+    DayFour.Solve();
 }

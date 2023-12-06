@@ -1,0 +1,18 @@
+package DayFour
+
+#load "helpers"
+
+use core {*}
+use helpers {*}
+
+Solve :: () -> void {
+
+}
+
+PartOne :: () -> void {
+
+}
+
+PartTwo :: () -> void {
+
+}
