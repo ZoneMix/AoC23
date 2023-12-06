@@ -6,36 +6,12 @@ use core {*}
 use helpers {*}
 
 Solve :: () -> void {
-    contents := GetContents("input/day_three.txt");
+    contents_part_one := GetContents("input/day_three.txt");
+    contents_part_two := GetContents("input/day_three.txt");
     PrintRes(
-        PartOne(contents),
-        PartTwo(contents)
+        PartOne(contents_part_one),
+        PartTwo(contents_part_two)
     );
-}
-
-CheckSpecial :: (contents: [][] u8, x, y, len: i32) -> bool {
-    map_height := contents.length;
-    map_width := contents[0].length;
-
-    for i: 0 .. len {
-        for row: -1 .. 2 {
-            for col: -1 .. 2 {
-                box_x := x + col + i;
-                box_y := y + row;
-
-                if box_x < 0 || box_x >= map_width ||
-                    box_y < 0 || box_y >= map_height do continue;
-
-                pos := contents[box_y][box_x];
-                if pos->is_num() do continue;
-                if pos == '.' do continue;
-                if pos == '\n' do continue;
-
-                return true;
-            }
-        }
-    }
-    return false;
 }
 
 GetTotalParts :: (contents: [][] u8) -> u32 {
@@ -58,6 +34,81 @@ GetTotalParts :: (contents: [][] u8) -> u32 {
         }
     }
     return total;
+
+    CheckSpecial :: macro (contents: [][] u8, x, y, len: i32) -> bool {
+        for i: 0 .. len {
+            for row: -1 .. 2 {
+                for col: -1 .. 2 {
+                    box_x := x + col + i;
+                    box_y := y + row;
+
+                    if box_x < 0 || box_x >= map_width ||
+                        box_y < 0 || box_y >= map_height do continue;
+
+                    pos := contents[box_y][box_x];
+                    if pos->is_num() do continue;
+                    if pos == '.' do continue;
+
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}
+
+
+GetGears :: (contents: [][] u8) -> u32 {
+    total := 0;
+    gears : Map(Pair(i32, i32), [] i32);
+    map_height := contents.length;
+    map_width := contents[0].length;
+
+    for y: 0 .. map_height {
+        for x: 0 .. map_width {
+            if contents[y][x] != '*' do continue;
+            nums := CheckGear(contents, x, y);
+
+            if nums.length == 2 do
+            gears->put(Pair.make(x, y), nums);
+        }
+    }
+
+    for gear: gears->as_iter() do 
+    total += gear.value[0] * gear.value[1];
+
+    return total;
+
+    CheckGear :: macro (contents: [][] u8, x, y: i32) -> [] i32 {
+        nums: [..] i32;
+        for row: -1 .. 2 {
+            for col: -1 .. 2 {
+                box_x := col + x;
+                box_y := row + y;
+
+                if box_x < 0 || box_x >= map_width ||
+                box_y < 0 || box_y >= map_height do continue;
+
+                pos := contents[box_y][box_x];
+                if pos->is_num() {
+                    if contents[box_y][box_x - 1]->is_num() do
+                    if contents[box_y][box_x - 2]->is_num() do
+                    nums << cast(i32) conv.parse_int(contents[box_y][box_x - 2 .. map_width]);
+
+                    if contents[box_y][box_x - 1]->is_num() do
+                    if !contents[box_y][box_x - 2]->is_num() do
+                    nums << cast(i32) conv.parse_int(contents[box_y][box_x - 1 .. map_width]);
+
+                    if !contents[box_y][box_x - 1]->is_num() do
+                    nums << cast(i32) conv.parse_int(contents[box_y][box_x .. map_width]);
+                }
+            }
+        }
+
+        num_slice := nums[0 .. nums.length];
+        slice.unique(&num_slice);
+        return num_slice;
+    }
 }
 
 PartOne :: (contents: [][] u8) -> u32 {
@@ -65,5 +116,5 @@ PartOne :: (contents: [][] u8) -> u32 {
 }
 
 PartTwo :: (contents: [][] u8) -> u32 {
-    return 0;
+    return GetGears(contents);
 }
