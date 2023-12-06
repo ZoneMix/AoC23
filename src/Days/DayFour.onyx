@@ -5,14 +5,104 @@ package DayFour
 use core {*}
 use helpers {*}
 
+Card :: struct {
+    id: u32;
+    wnum: [] u32;
+    unum: [] u32;
+}
+
 Solve :: () -> void {
-
+    PrintRes(
+        PartOne(),
+        PartTwo()
+    );
 }
 
-PartOne :: () -> void {
+GetCards :: () -> [..] Card {
+    contents := GetContents("input/day_four.txt");
+    cards: [..] Card;
+    for line: contents {
+        card: Card;
+        wnum : [..] u32;
+        unum: [..] u32;
 
+        string.advance(&line, 4);
+
+        card.id = ~~conv.parse_int(line);
+
+        string.advance(&line, 5);
+        tmp_wnum := string.split(
+            string.read_until_any(&line, 0, '|'),
+            32
+        );
+        string.advance(&line, 1);
+        tmp_unum := string.split(
+            string.read_until_any(&line, 0, '\n'),
+            32
+        );
+
+        for elem: tmp_wnum do
+            if !string.empty(elem) do
+                wnum << ~~conv.parse_int(elem);
+
+        for elem: tmp_unum do
+            if !string.empty(elem) do
+                unum << ~~conv.parse_int(elem);
+
+        card.wnum = wnum;
+        card.unum = unum;
+
+        cards << card;
+    }
+    return cards;
 }
 
-PartTwo :: () -> void {
+GetMatches :: (card: Card) -> u32 {
+    matches := 0;
+    for w: card.wnum {
+        for u: card.unum {
+            if w == u {
+                matches += 1;
+            }
+        }
+    }
+    return matches;
+}
 
+PartOne :: () -> u32 {
+    cards := GetCards();
+    total := 0;
+
+    for card: cards {
+        if GetMatches(card) == 0 do continue;
+        total += 1 << GetMatches(card) - 1;
+    }
+
+    return total;
+}
+
+PartTwo :: () -> u32 {
+    cards := GetCards();
+    card_map: Map(i32, i32);
+    card_matches_map: Map(i32, i32);
+
+    for card: cards {
+        card_map->put(card.id, 1);
+        if GetMatches(card) == 0 do continue;
+        card_matches_map->put(card.id, GetMatches(card));
+    }
+
+    count := 1;
+    for card: card_map->as_iter() {
+        max := map.get(&card_matches_map, 1)?;
+        for x: 1 .. max {
+            card_map[count + x] += 1;
+        }
+        if count == 1 {
+            println(card_map);
+        }
+        count += 1;
+    }
+
+    return 0;
 }
