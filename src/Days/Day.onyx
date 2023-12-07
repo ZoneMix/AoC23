@@ -4,11 +4,17 @@ package Day
 #load "Days/DayTwo"
 #load "Days/DayThree"
 #load "Days/DayFour"
+#load "Days/DayFive"
+#load "Days/DaySix"
+#load "Days/DaySeven"
 
 use DayOne
 use DayTwo
 use DayThree
 use DayFour
+use DayFive
+use DaySix
+use DaySeven
 
 use core { println }
 
@@ -34,4 +40,19 @@ Three :: () -> void {
 Four :: () -> void {
     println("Solving Day Four");
     DayFour.Solve();
+}
+
+Five :: () -> void {
+    println("Solving Day Five");
+    DayFive.Solve();
+}
+
+Six :: () -> void {
+    println("Solving Day Six");
+    DaySix.Solve();
+}
+
+Seven :: () -> void {
+    println("Solving Day Seven");
+    DaySeven.Solve();
 }

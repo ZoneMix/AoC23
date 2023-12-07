@@ -1,0 +1,18 @@
+package DaySeven
+
+#load "helpers"
+
+use core {*}
+use helpers {*}
+
+Solve :: () -> void {
+
+}
+
+PartOne :: () -> u32 {
+    return 0;
+}
+
+PartTwo :: () -> u32 {
+    return 0;
+}
