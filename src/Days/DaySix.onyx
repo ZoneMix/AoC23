@@ -6,13 +6,82 @@ use core {*}
 use helpers {*}
 
 Solve :: () -> void {
-
+    PrintRes(~~PartOne(), ~~PartTwo());
 }
 
-PartOne :: () -> u32 {
-    return 0;
+SplitNums :: (s: str) -> [..] i64 {
+    slice := string.split(s, ' ');
+    nums: [..] i64;
+
+    for n: slice do 
+        if !string.empty(n) do 
+            nums << ~~conv.parse_int(n);
+
+    return nums;
 }
 
-PartTwo :: () -> u32 {
-    return 0;
+ConvertOneRace :: (t: str, d: str) -> Pair(i64, i64) {
+    time_str := string.to_dyn_str(t);
+    dist_str := string.to_dyn_str(d);
+
+    array.remove(&time_str, ' ');
+    array.remove(&dist_str, ' ');
+
+    return Pair.make(
+        cast(i64) conv.parse_int(time_str),
+        cast(i64) conv.parse_int(dist_str)
+    );
+}
+
+GetRaces :: () -> [..] Pair(i64, i64) {
+    contents := GetContents("input/day_six.txt");
+    races: [..] Pair(i64, i64);
+
+    time_str := contents[0];
+    dist_str := contents[1];
+
+    string.advance(&time_str, "Time:        ".count);
+    string.advance(&dist_str, "Distance:   ".count);    
+
+    time_nums := SplitNums(time_str);
+    dist_nums := SplitNums(dist_str); 
+
+    for x: 0 .. 4 do 
+        races << Pair.make(time_nums[x], dist_nums[x]);
+
+    races << ConvertOneRace(time_str, dist_str);
+
+    return races;
+}
+
+CountWins :: (race: Pair(i64, i64)) -> i64 {
+    wins := 0;
+    time := race.first;
+    record := race.second;
+
+    possible_dists: [..] i64;
+    defer array.free(&possible_dists);
+
+    for s: 0 .. cast(i32) time + 1 do 
+        possible_dists << (time - ~~s) * ~~s;
+
+    for dist: possible_dists do
+        if dist > record do wins += 1;
+
+    return ~~wins;
+}
+
+PartOne :: () -> i64 {
+    total : i64 = 1;
+    races := GetRaces();
+    for x: 0 .. races.length - 1 do 
+        total *= CountWins(races[x]);
+    return total;
+}
+
+PartTwo :: () -> i64 {
+    total : i64 = 1;
+    races := GetRaces();
+    total *= CountWins(races[races.length - 1]);
+    return total;
 }

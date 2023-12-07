@@ -9,10 +9,10 @@ Solve :: () -> void {
 
 }
 
-PartOne :: () -> u32 {
+PartOne :: () -> u64 {
     return 0;
 }
 
-PartTwo :: () -> u32 {
+PartTwo :: () -> u64 {
     return 0;
 }
