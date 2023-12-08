@@ -5,11 +5,20 @@ package DaySeven
 use core {*}
 use helpers {*}
 
+PART_TWO :: true
+
 Solve :: () -> void {
     card_map := Map.literal(u8, i32, .[
-        .{'1', 1}, .{'2', 2}, .{'3', 3}, .{'4', 4},
+        .{'2', 2}, .{'3', 3}, .{'4', 4},
         .{'5', 5}, .{'6', 6}, .{'7', 7}, .{'8', 8},
         .{'9', 9}, .{'T', 10}, .{'J', 11}, .{'Q', 12}, 
+        .{'K', 13}, .{'A', 14}
+    ]);
+
+    card_map_two := Map.literal(u8, i32, .[
+        .{'J', 0}, .{'2', 2}, .{'3', 3}, .{'4', 4},
+        .{'5', 5}, .{'6', 6}, .{'7', 7}, .{'8', 8},
+        .{'9', 9}, .{'T', 10}, .{'Q', 12}, 
         .{'K', 13}, .{'A', 14}
     ]);
 
@@ -46,17 +55,16 @@ Solve :: () -> void {
     for x: 0 .. hands.length do CheckFull(hands[x], x);
     for x: full do array.remove(&hands, x);
 
-    // Get Three of Kind
+    //// Get Three of Kind
     for x: 0 .. hands.length do CheckKind(hands[x], x, 3);
     for x: three do array.remove(&hands, x);
 
-    // Get Pairs
+    //// Get Pairs
     for x: 0 .. hands.length do CheckPair(hands[x], x);
     for x: two_pair do array.remove(&hands, x);
     for x: one_pair do array.remove(&hands, x);
 
-    // Get Highest
-    println(hands);
+    //// Get Highest
     for x: hands do highest << x;
 
     array.free(&hands);
@@ -70,25 +78,64 @@ Solve :: () -> void {
     all_hands << one_pair;
     all_hands << highest;
 
-    SortHands(all_hands, &card_map);
-    PartOne(all_hands, &hand_map);
+    #if !PART_TWO {
+        SortHands(all_hands, &card_map);
+        println(Calculate(all_hands, &hand_map));
+    } else {
+        tmp: [..] str;
+        for s: all_hands do for h: s do tmp << h;
+        count := 0;
+        for x: hand_map->as_iter() {
+            for i: tmp {
+                if x.key == i do count += 1;
+            }
+        }
+        println(count);
+        SortHands(all_hands, &card_map_two);
+        println(Calculate(all_hands, &hand_map));
+    }
 
     CheckKind :: macro (h: [] u8, idx: i32, kind: i32) -> void {
+        all_jacks := false;
         for card: card_map->as_iter() {
             count := 0;
-            for c: h do if c == card.key do count += 1;
-            if kind == 5 && count == 5 do five << h; 
-            if kind == 4 && count == 4 do four << h; 
-            if kind == 3 && count == 3 do three << h;
+            jacks := 0;
+            for c: h do if c == card.key && c != 'J' do count += 1;
+            #if PART_TWO do for c: h do if c == 'J' do jacks += 1;
+
+            // Handle the all Jacks case
+            if jacks == 5 {
+                    five << h;
+                    break;
+            }
+
+            count += jacks;
+            if kind == 5 && count == 5 {
+                five << h;
+                break;
+            } 
+            if kind == 4 && count == 4 {
+                four << h;
+                break;
+            }
+            if kind == 3 && count == 3 {
+                three << h;
+                break;
+            }
         }
     }
-    CheckFull :: macro (h: [] u8, idx: i32) -> bool {
+    CheckFull :: macro (h: [] u8, idx: i32) -> void {
         current: u8 = '\0';
 
         //Check for Three of Kind
         for card: card_map->as_iter() {
             count := 0;
-            for c: h do if c == card.key do count += 1;
+            jacks := 0;
+
+            for c: h do if c == card.key && c != 'J' do count += 1;
+            #if PART_TWO do for c: h do if c == 'J' do jacks += 1;
+            count += jacks;
+
             if count == 3 { current = card.key; break; }
         }
 
@@ -96,18 +143,24 @@ Solve :: () -> void {
         if current != '\0' {
             for card: card_map->as_iter() {
                 count := 0;
-                for c: h do if c == card.key && current != c do count += 1;
-                if count == 2 do full << h;
+                for c: h do if c == card.key && current != c && c != 'J' do count += 1;
+                if count == 2 do {
+                    full << h;
+                }
             }
         }
     }
-    CheckPair :: macro (h: [] u8, idx: i32) -> bool {
+    CheckPair :: macro (h: [] u8, idx: i32) -> void {
         current: u8 = '\0';
 
         //Check for One Pair
         for card: card_map->as_iter() {
             count := 0;
-            for c: h do if c == card.key do count += 1;
+            jacks := 0;
+            for c: h do if c == card.key && c != 'J' do count += 1;
+            #if PART_TWO do for c: h do if c == 'J' do jacks += 1;
+            count += jacks;
+
             if count == 2 { current = card.key; break; }
         }
 
@@ -122,7 +175,9 @@ Solve :: () -> void {
                     pair = true;
                 }
             }
-            if pair == false do one_pair << h;
+            if pair == false {
+                one_pair << h;
+            }
         }
     }
 }
@@ -151,7 +206,7 @@ SortHands :: (hands: [..][] str, card_map: &Map(u8, i32)) -> void {
     }
 }
 
-PartOne :: (hands: [..][] str, hand_map: &Map([] u8, i32)) -> void {
+Calculate :: (hands: [..][] str, hand_map: &Map([] u8, i32)) -> i64 {
     total: i64 = 0;
     rank := 1000;
     tmp := 0;
@@ -162,11 +217,5 @@ PartOne :: (hands: [..][] str, hand_map: &Map([] u8, i32)) -> void {
             rank -= 1;
         }
     }
-
-    println(tmp);
-    printf("Part 1: {}\n", total);
-}
-
-PartTwo :: () -> u32 {
-    return 0;
+    return total;
 }
