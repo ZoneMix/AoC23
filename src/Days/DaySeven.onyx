@@ -82,15 +82,6 @@ Solve :: () -> void {
         SortHands(all_hands, &card_map);
         println(Calculate(all_hands, &hand_map));
     } else {
-        tmp: [..] str;
-        for s: all_hands do for h: s do tmp << h;
-        count := 0;
-        for x: hand_map->as_iter() {
-            for i: tmp {
-                if x.key == i do count += 1;
-            }
-        }
-        println(count);
         SortHands(all_hands, &card_map_two);
         println(Calculate(all_hands, &hand_map));
     }
@@ -175,9 +166,7 @@ Solve :: () -> void {
                     pair = true;
                 }
             }
-            if pair == false {
-                one_pair << h;
-            }
+            if pair == false do one_pair << h;
         }
     }
 }
