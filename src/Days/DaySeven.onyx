@@ -5,28 +5,11 @@ package DaySeven
 use core {*}
 use helpers {*}
 
-Card :: enum (i32) {
-    One :: 1;
-    Two;
-    Three;
-    Four;
-    Five;
-    Six;
-    Seven;
-    Eight;
-    Nine;
-    Ten;
-    Jack;
-    Queen;
-    King;
-}
-
-
 Solve :: () -> void {
     card_map := Map.literal(u8, i32, .[
         .{'1', 1}, .{'2', 2}, .{'3', 3}, .{'4', 4},
         .{'5', 5}, .{'6', 6}, .{'7', 7}, .{'8', 8},
-        .{'9', 9}, .{'J', 11}, .{'Q', 12}, .{'T', 10}, 
+        .{'9', 9}, .{'T', 10}, .{'J', 11}, .{'Q', 12}, 
         .{'K', 13}, .{'A', 14}
     ]);
 
@@ -73,6 +56,7 @@ Solve :: () -> void {
     for x: one_pair do array.remove(&hands, x);
 
     // Get Highest
+    println(hands);
     for x: hands do highest << x;
 
     array.free(&hands);
@@ -84,10 +68,10 @@ Solve :: () -> void {
     all_hands << three;
     all_hands << two_pair;
     all_hands << one_pair;
+    all_hands << highest;
 
-    sorted_hands := SortHands(all_hands, card_map);
-
-    PartOne(all_hands, card_map);
+    SortHands(all_hands, &card_map);
+    PartOne(all_hands, &hand_map);
 
     CheckKind :: macro (h: [] u8, idx: i32, kind: i32) -> void {
         for card: card_map->as_iter() {
@@ -129,26 +113,58 @@ Solve :: () -> void {
 
         //Check for Possible Two Pair, if not add to one_pair
         if current != '\0' {
+            pair := false;
             for card: card_map->as_iter() {
                 count := 0;
                 for c: h do if c == card.key && current != c do count += 1;
-                if count == 2 do two_pair << h;
+                if count == 2 { 
+                    two_pair << h;
+                    pair = true;
+                }
             }
-            one_pair << h;
+            if pair == false do one_pair << h;
         }
     }
 }
 
-SortHands :: (hands: [..][] str, card_map: Map(u8, i32)) -> [..][] str {
+SortHands :: (hands: [..][] str, card_map: &Map(u8, i32)) -> void {
     for strength: hands {
-        for h: strength {
-            
+        for x: 0 .. strength.length - 1 {
+            swapped := false;
+            for i: 0 .. strength.length - 1 {
+                for j: 0 .. 5 {
+                    first := card_map->get(strength[i][j])?;
+                    second := card_map->get(strength[i+1][j])?;
+                    if first != second {
+                        if first < second {
+                            tmp := strength[i];
+                            strength[i] = strength[i+1];
+                            strength[i+1] = tmp;
+                            swapped = true;
+                        }
+                        break;
+                    }
+                }
+            }
+            if swapped == false do break;
         }
     }
 }
 
-PartOne :: (hands: [..][] str, card_map: Map(u8, i32)) -> u32 {
-    return 0;
+PartOne :: (hands: [..][] str, hand_map: &Map([] u8, i32)) -> void {
+    total: i64 = 0;
+    rank := 1000;
+    tmp := 0;
+    for strength: hands {
+        tmp += strength.length;
+        for h: strength {
+            total += ~~(rank * hand_map->get(h)?);
+            rank -= 1;
+        }
+    }
+
+    println(tmp);
+    printf("Part 1: {}\n", total);
 }
 
 PartTwo :: () -> u32 {
