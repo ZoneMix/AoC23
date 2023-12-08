@@ -4,7 +4,7 @@ use Day
 
 main :: () -> void {
 	//Day.Five();
-	Day.Six();
-	//Day.Seven();
+	//Day.Six();
+	Day.Seven();
 	//Day.SolveAll();
 }

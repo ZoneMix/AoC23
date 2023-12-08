@@ -5,11 +5,149 @@ package DaySeven
 use core {*}
 use helpers {*}
 
-Solve :: () -> void {
-
+Card :: enum (i32) {
+    One :: 1;
+    Two;
+    Three;
+    Four;
+    Five;
+    Six;
+    Seven;
+    Eight;
+    Nine;
+    Ten;
+    Jack;
+    Queen;
+    King;
 }
 
-PartOne :: () -> u32 {
+
+Solve :: () -> void {
+    card_map := Map.literal(u8, i32, .[
+        .{'1', 1}, .{'2', 2}, .{'3', 3}, .{'4', 4},
+        .{'5', 5}, .{'6', 6}, .{'7', 7}, .{'8', 8},
+        .{'9', 9}, .{'J', 11}, .{'Q', 12}, .{'T', 10}, 
+        .{'K', 13}, .{'A', 14}
+    ]);
+
+    five: [..] str;
+    four: [..] str;
+    full: [..] str;
+    three: [..] str;
+    two_pair: [..] str;
+    one_pair: [..] str;
+    highest: [..] str;
+
+    hand_map: Map([] u8, i32);
+
+    for line: GetContents("input/day_seven.txt") do
+        map.put(
+            &hand_map, 
+            string.split(line, 32)[0], 
+            ~~conv.parse_int(string.split(line, 32)[1])
+        );
+
+    hands := hand_map->as_iter()
+        |> iter.map(hand => hand.key)
+        |> iter.collect();
+
+    // Get Five of a Kind
+    for x: 0 .. hands.length do CheckKind(hands[x], x, 5);
+    for x: five do array.remove(&hands, x);
+
+    // Get Four of a Kind
+    for x: 0 .. hands.length do CheckKind(hands[x], x, 4);
+    for x: four do array.remove(&hands, x);
+
+    // Get Full Houses
+    for x: 0 .. hands.length do CheckFull(hands[x], x);
+    for x: full do array.remove(&hands, x);
+
+    // Get Three of Kind
+    for x: 0 .. hands.length do CheckKind(hands[x], x, 3);
+    for x: three do array.remove(&hands, x);
+
+    // Get Pairs
+    for x: 0 .. hands.length do CheckPair(hands[x], x);
+    for x: two_pair do array.remove(&hands, x);
+    for x: one_pair do array.remove(&hands, x);
+
+    // Get Highest
+    for x: hands do highest << x;
+
+    array.free(&hands);
+
+    all_hands: [..][] str;    
+    all_hands << five;
+    all_hands << four;
+    all_hands << full;
+    all_hands << three;
+    all_hands << two_pair;
+    all_hands << one_pair;
+
+    sorted_hands := SortHands(all_hands, card_map);
+
+    PartOne(all_hands, card_map);
+
+    CheckKind :: macro (h: [] u8, idx: i32, kind: i32) -> void {
+        for card: card_map->as_iter() {
+            count := 0;
+            for c: h do if c == card.key do count += 1;
+            if kind == 5 && count == 5 do five << h; 
+            if kind == 4 && count == 4 do four << h; 
+            if kind == 3 && count == 3 do three << h;
+        }
+    }
+    CheckFull :: macro (h: [] u8, idx: i32) -> bool {
+        current: u8 = '\0';
+
+        //Check for Three of Kind
+        for card: card_map->as_iter() {
+            count := 0;
+            for c: h do if c == card.key do count += 1;
+            if count == 3 { current = card.key; break; }
+        }
+
+        //Check for Two of Kind if Three of Kind Found
+        if current != '\0' {
+            for card: card_map->as_iter() {
+                count := 0;
+                for c: h do if c == card.key && current != c do count += 1;
+                if count == 2 do full << h;
+            }
+        }
+    }
+    CheckPair :: macro (h: [] u8, idx: i32) -> bool {
+        current: u8 = '\0';
+
+        //Check for One Pair
+        for card: card_map->as_iter() {
+            count := 0;
+            for c: h do if c == card.key do count += 1;
+            if count == 2 { current = card.key; break; }
+        }
+
+        //Check for Possible Two Pair, if not add to one_pair
+        if current != '\0' {
+            for card: card_map->as_iter() {
+                count := 0;
+                for c: h do if c == card.key && current != c do count += 1;
+                if count == 2 do two_pair << h;
+            }
+            one_pair << h;
+        }
+    }
+}
+
+SortHands :: (hands: [..][] str, card_map: Map(u8, i32)) -> [..][] str {
+    for strength: hands {
+        for h: strength {
+            
+        }
+    }
+}
+
+PartOne :: (hands: [..][] str, card_map: Map(u8, i32)) -> u32 {
     return 0;
 }
 
