@@ -3,8 +3,8 @@
 use Day
 
 main :: () -> void {
-	//Day.Five();
+	Day.Five();
 	//Day.Six();
-	Day.Seven();
+	//Day.Seven();
 	//Day.SolveAll();
 }

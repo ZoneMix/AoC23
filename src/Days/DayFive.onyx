@@ -5,8 +5,57 @@ package DayFive
 use core {*}
 use helpers {*}
 
-Solve :: () -> void {
+SplitNums :: (s: [] u8, count: i32) -> [..] u64 {
+    return string.split_iter(
+    string.advance(s, count), " ")
+    ->filter(x => !string.empty(x))
+    ->map(x => cast(u64) conv.parse_int(x))
+    ->collect();
+}
 
+GetSections :: (contents: [][] u8) -> [..][..][..] u64 {
+    sections: [..][..][..] u64;
+
+    for i: 0 .. contents.length {
+        if string.contains(contents[i], "map:") do GetSection();
+    }
+
+    GetSection :: macro () -> [..] u64 {
+        x := i + 1;
+        section: [..][..] u64;
+        while contents[x] != "" && x <= contents.length {
+            section << SplitNums(contents[x], 0);
+            x += 1;
+        }
+        sections << section;
+    }
+    return sections;
+}
+
+GetRanges :: (ss: [..][..][..] u64) -> Map(i32, [..] range) {
+
+    // TODO Go through each section
+    // for each mapping in section, create an array of ranges. 
+    // dst src offset
+    // 50  98  2 -> [98-99, 50-51] two ranges
+    // now i will be able to tell 98 maps to 50
+    //  for m: 0 .. mapping.length {
+    //    if seed in mapping[m]
+    //}
+    //
+    //Append that range to an array of ranges.
+    // Need to create a normal range that will fit properly where
+    // needed. 
+
+}
+
+Solve :: () -> void {
+    contents := GetContents("input/day_five.txt");
+    seeds := SplitNums(contents[0], "seeds: ".count);
+    sections := GetSections(contents[2 .. contents.length - 1]);
+    ranges := GetRanges(sections);
+
+    println(sections);
 }
 
 PartOne :: () -> u32 {
